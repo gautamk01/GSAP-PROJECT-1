@@ -128,6 +128,16 @@ export default function Hero() {
               scale: 2,
               duration: 1,
               ease: "hop",
+              onComplete: () => {
+                // Force repaint to fix image quality after scale
+                const heroImg = document.querySelector(".hero-img img");
+                if (heroImg) {
+                  heroImg.style.transform = "translateZ(0.1px)";
+                  requestAnimationFrame(() => {
+                    heroImg.style.transform = "translateZ(0)";
+                  });
+                }
+              },
             })
             .to(
               ".hero-img",
