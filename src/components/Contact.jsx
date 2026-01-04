@@ -8,7 +8,12 @@ export default function Contact() {
         <p className="section-text">
           Interested in working together? Let's create something amazing!
         </p>
-        <a href="mailto:gautam@example.com" className="contact-btn">
+        <a
+          href="https://www.linkedin.com/in/gautam-krishna-dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="contact-btn"
+        >
           Contact Me
         </a>
       </div>
