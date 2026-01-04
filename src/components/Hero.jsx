@@ -179,19 +179,19 @@ export default function Hero() {
       {/* hero images will be placed */}
       <div className="hero-images">
         <div className="img">
-          <img src="/image/1.jpg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}image/1.jpg`} alt="" />
         </div>
         <div className="img">
-          <img src="/image/2.jpg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}image/2.jpg`} alt="" />
         </div>
         <div className="img hero-img">
-          <img src="/image/3.jpg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}image/3.jpg`} alt="" />
         </div>
         <div className="img">
-          <img src="/image/4.jpg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}image/4.jpg`} alt="" />
         </div>
         <div className="img">
-          <img src="/image/5.jpg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}image/5.jpg`} alt="" />
         </div>
       </div>
 
