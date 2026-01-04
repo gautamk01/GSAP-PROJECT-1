@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 import { SplitText } from "gsap/SplitText";
@@ -9,6 +9,8 @@ CustomEase.create("hop", "0.85, 0, 0.15, 1");
 export default function Hero() {
   const counterRef = useRef({ value: 0 });
   const counterProgressRef = useRef(null);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Disable scrolling during intro
@@ -23,18 +25,25 @@ export default function Hero() {
       `${import.meta.env.BASE_URL}image/5.jpg`,
     ];
 
-    const loadImage = (url) => {
+    const loadImage = (url, index) => {
       return new Promise((resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve(img);
+        img.onload = () => {
+          // Update progress as each image loads
+          setLoadingProgress(
+            Math.round(((index + 1) / imageUrls.length) * 100)
+          );
+          resolve(img);
+        };
         img.onerror = reject;
         img.src = url;
       });
     };
 
     // Wait for all images to load, then start animation
-    Promise.all(imageUrls.map(loadImage))
+    Promise.all(imageUrls.map((url, index) => loadImage(url, index)))
       .then(() => {
+        setIsLoading(false);
         const ctx = gsap.context(() => {
           // SplitText on BOTH headers
           const split = new SplitText(".hero-header h1", {
@@ -183,49 +192,80 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className="hero">
-      <div className="hero-overlay">
-        <div className="overlay-text-container">
-          <div className="overlay-text">
-            <p>Creative Designer</p>
-            <p>Web Developer</p>
-            <p>UI/UX Designer</p>
-            <p>Product Designer</p>
+    <>
+      {/* Loading Screen */}
+      {isLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+            backgroundColor: "#000",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+        >
+          <p
+            style={{
+              color: "#fff",
+              fontSize: "1.5rem",
+              fontFamily: "DM Mono, monospace",
+              textTransform: "uppercase",
+            }}
+          >
+            Loading Images... {loadingProgress}%
+          </p>
+        </div>
+      )}
+
+      <section className="hero">
+        <div className="hero-overlay">
+          <div className="overlay-text-container">
+            <div className="overlay-text">
+              <p>Creative Designer</p>
+              <p>Web Developer</p>
+              <p>UI/UX Designer</p>
+              <p>Product Designer</p>
+            </div>
+          </div>
+          <div className="counter">
+            <h1 ref={counterProgressRef}>0</h1>
           </div>
         </div>
-        <div className="counter">
-          <h1 ref={counterProgressRef}>0</h1>
-        </div>
-      </div>
 
-      {/* Layer 1: Solid Text (Visible during intro) */}
-      <div className="hero-header hero-header-solid">
-        <h1>Gautam Krishna M</h1>
-      </div>
+        {/* Layer 1: Solid Text (Visible during intro) */}
+        <div className="hero-header hero-header-solid">
+          <h1>Gautam Krishna M</h1>
+        </div>
 
-      {/* hero images will be placed */}
-      <div className="hero-images">
-        <div className="img">
-          <img src={`${import.meta.env.BASE_URL}image/1.jpg`} alt="" />
+        {/* hero images will be placed */}
+        <div className="hero-images">
+          <div className="img">
+            <img src={`${import.meta.env.BASE_URL}image/1.jpg`} alt="" />
+          </div>
+          <div className="img">
+            <img src={`${import.meta.env.BASE_URL}image/2.jpg`} alt="" />
+          </div>
+          <div className="img hero-img">
+            <img src={`${import.meta.env.BASE_URL}image/3.jpg`} alt="" />
+          </div>
+          <div className="img">
+            <img src={`${import.meta.env.BASE_URL}image/4.jpg`} alt="" />
+          </div>
+          <div className="img">
+            <img src={`${import.meta.env.BASE_URL}image/5.jpg`} alt="" />
+          </div>
         </div>
-        <div className="img">
-          <img src={`${import.meta.env.BASE_URL}image/2.jpg`} alt="" />
-        </div>
-        <div className="img hero-img">
-          <img src={`${import.meta.env.BASE_URL}image/3.jpg`} alt="" />
-        </div>
-        <div className="img">
-          <img src={`${import.meta.env.BASE_URL}image/4.jpg`} alt="" />
-        </div>
-        <div className="img">
-          <img src={`${import.meta.env.BASE_URL}image/5.jpg`} alt="" />
-        </div>
-      </div>
 
-      {/* Layer 2: Outline Text (Hidden, activates post-intro) */}
-      <div className="hero-header hero-header-outline">
-        <h1>Gautam Krishna M</h1>
-      </div>
-    </section>
+        {/* Layer 2: Outline Text (Hidden, activates post-intro) */}
+        <div className="hero-header hero-header-outline">
+          <h1>Gautam Krishna M</h1>
+        </div>
+      </section>
+    </>
   );
 }
